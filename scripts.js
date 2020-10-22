@@ -24,7 +24,7 @@ function generateGrid() {
   grid = arr;
   grid[snake[0].x][snake[0].y] = 'S';
   appleLocation(grid);
-  draw(grid)
+  drawGrid(grid)
 }
 
 function appleLocation(arr) {
@@ -55,15 +55,13 @@ function checkDestination() {
   switch (grid[newHeadX][newHeadY]) {
     case 0:
       // move snake
-      ctx.fillStyle = 'green';
       snake.unshift({x:newHeadX, y:newHeadY});
       grid[newHeadX][newHeadY] = 'S';
-      ctx.fillRect(newHeadX*sqr, newHeadY*sqr, sqr,sqr);
+      drawSquare(newHeadX,newHeadY);
       // update tail
-      ctx.fillStyle = 'black';
       const oldTail = snake.pop();
       grid[oldTail.x][oldTail.y] = 0;
-      ctx.fillRect(oldTail.x*sqr, oldTail.y*sqr, sqr,sqr);
+      drawSquare(oldTail.x, oldTail.y)
       break;
     case 'S':
       gameOver()
@@ -73,8 +71,7 @@ function checkDestination() {
       snake.unshift({x:newHeadX, y:newHeadY});
       grid[newHeadX][newHeadY] = 'S';
       appleLocation(grid);
-      ctx.fillStyle = 'green';
-      ctx.fillRect(newHeadX*sqr, newHeadY*sqr, sqr,sqr);
+      drawSquare(newHeadX,newHeadY)
       break;
   }
 }
@@ -99,6 +96,27 @@ function changeDirection(e) {
   }
 }
 
+// draw entire grid
+function drawGrid(arr) {
+  for (let x = 0;x<arr.length; x++) {
+    for (let y = 0;y<arr[0].length; y++) {
+
+      drawSquare(x,y);
+    }
+  }
+}
+// update specific square
+function drawSquare(x,y) {
+  if (grid[x][y] === 0) {
+    ctx.fillStyle = 'black';
+  } else if (grid[x][y] === 'S') {
+    ctx.fillStyle = 'green';
+  } else if (grid[x][y] === 'A') {
+    ctx.fillStyle = 'red';
+  }
+  ctx.fillRect(x*sqr,y*sqr,sqr,sqr)
+}
+
 function gameOver() {
   clearInterval(interval);
   lost = true;
@@ -110,27 +128,8 @@ function gameOver() {
 
 }
 
-// draw
-function draw(arr) {
-  for (let x = 0;x<arr.length; x++) {
-    for (let y = 0;y<arr[0].length; y++) {
-
-      if (arr[x][y] === 0) {
-        ctx.fillStyle = 'black';
-      } else if (arr[x][y] === 'S') {
-        console.log(arr[x][y])
-        ctx.fillStyle = 'green';
-      } else if (arr[x][y] === 'A') {
-        ctx.fillStyle = 'red';
-      }
-      ctx.fillRect(x*sqr,y*sqr,sqr,sqr)
-    }
-  }
-}
-
 function restart(e) {
   if (lost & e.keyCode === 13) { // restart game
-    console.log()
     lost = !lost;
     generateGrid()
     gameTurn();
