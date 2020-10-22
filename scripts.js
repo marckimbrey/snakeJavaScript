@@ -9,6 +9,7 @@ let grid;
 
 let interval;
 let lost = false;
+let score = 0;
 
 
 // initial gameState
@@ -71,12 +72,11 @@ function checkDestination() {
       snake.unshift({x:newHeadX, y:newHeadY});
       grid[newHeadX][newHeadY] = 'S';
       appleLocation(grid);
-      drawSquare(newHeadX,newHeadY)
+      updateScore();
+      drawSquare(newHeadX,newHeadY);
       break;
   }
 }
-
-
 
 function changeDirection(e) {
   switch(e.keyCode) {
@@ -92,19 +92,27 @@ function changeDirection(e) {
       case 40: // down
         direction ={x:0, y: 1};
         break;
-
   }
+}
+
+function updateScore() {
+  ctx.fillStyle = 'black';
+  ctx.fillText(`score: ${score}`,26*sqr,1*sqr);
+  score = snake.length -1;
+  ctx.font = '20px serif';
+  ctx.fillStyle = 'green';
+  ctx.fillText(`score: ${score}`,26*sqr,1*sqr);
 }
 
 // draw entire grid
 function drawGrid(arr) {
   for (let x = 0;x<arr.length; x++) {
     for (let y = 0;y<arr[0].length; y++) {
-
       drawSquare(x,y);
     }
   }
 }
+
 // update specific square
 function drawSquare(x,y) {
   if (grid[x][y] === 0) {
@@ -125,13 +133,12 @@ function gameOver() {
   ctx.fillText('Game Over!!!',9*sqr,14*sqr);
   ctx.font = '20px serif';
   ctx.fillText('press enter to play again',10*sqr,16*sqr);
-
 }
 
 function restart(e) {
   if (lost & e.keyCode === 13) { // restart game
     lost = !lost;
-    generateGrid()
+    generateGrid();
     gameTurn();
   }
 }
